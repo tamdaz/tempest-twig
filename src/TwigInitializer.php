@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig;
 
-use Twig\Environment;
-use Twig\Loader\FilesystemLoader;
-use Twig\Extension\AttributeExtension;
 use Tamdaz\TempestTwig\Twig\ComponentLoader;
-use Tempest\Container\{Container, Initializer, Singleton};
-use Tamdaz\TempestTwig\Twig\Extensions\{DebugExtension, RoutingExtension, ViteExtension};
+use Tamdaz\TempestTwig\Twig\Extensions\DebugExtension;
+use Tamdaz\TempestTwig\Twig\Extensions\RoutingExtension;
+use Tamdaz\TempestTwig\Twig\Extensions\ViteExtension;
+use Tempest\Container\Container;
+use Tempest\Container\Initializer;
+use Tempest\Container\Singleton;
+use Twig\Environment;
+use Twig\Extension\AttributeExtension;
+use Twig\Loader\FilesystemLoader;
 
 final class TwigInitializer implements Initializer
 {

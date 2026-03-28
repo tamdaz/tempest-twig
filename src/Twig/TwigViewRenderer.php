@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig\Twig;
 
+use Tempest\View\View;
+use Tempest\View\ViewRenderer;
 use Twig\Environment;
-use Tempest\View\{View, ViewRenderer};
-use Twig\Error\{LoaderError, RuntimeError, SyntaxError};
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 final readonly class TwigViewRenderer implements ViewRenderer
 {
@@ -17,8 +20,9 @@ final readonly class TwigViewRenderer implements ViewRenderer
      */
     public function __construct(
         private Environment $twig
-    ) {
-        if (! $twig->getLoader() instanceof ComponentLoader) {
+    )
+    {
+        if (!$twig->getLoader() instanceof ComponentLoader) {
             $twig->setLoader(new ComponentLoader($twig->getLoader()));
         }
     }

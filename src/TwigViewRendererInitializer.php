@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig;
 
-use Tempest\View\{ViewConfig, ViewRenderer};
 use Tamdaz\TempestTwig\Twig\TwigViewRenderer;
+use Tempest\Container\Container;
+use Tempest\Container\Initializer;
+use Tempest\Container\Singleton;
 use Tempest\View\Renderers\TempestViewRenderer;
-use Tempest\Container\{Container, Initializer, Singleton};
+use Tempest\View\ViewConfig;
+use Tempest\View\ViewRenderer;
 
 final class TwigViewRendererInitializer implements Initializer
 {

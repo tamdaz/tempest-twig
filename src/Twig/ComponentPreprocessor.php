@@ -108,11 +108,7 @@ final class ComponentPreprocessor
             }
 
             /** @var array{0: array{0: string, 1: int}, 1: array{0: string, 1: int}, 2?: array{0: string, 1: int}} $tagMatches */
-            [$textBefore, $tagInfo, $closeTagPositions] = self::processOpeningTag(
-                $source,
-                $currentPos,
-                $tagMatches
-            );
+            [$textBefore, $tagInfo, $closeTagPositions] = self::processOpeningTag($source, $currentPos, $tagMatches);
 
             if ($closeTagPositions === null) {
                 // Malformed: no closing tag found — leave as-is and move on
@@ -123,11 +119,7 @@ final class ComponentPreprocessor
 
             $result .= $textBefore;
 
-            $componentContent = substr(
-                $source,
-                $tagInfo['contentStart'],
-                $closeTagPositions[0] - $tagInfo['contentStart']
-            );
+            $componentContent = substr($source, $tagInfo['contentStart'], $closeTagPositions[0] - $tagInfo['contentStart']);
 
             $processedContent = self::processBlockTags($componentContent);
 
@@ -191,11 +183,7 @@ final class ComponentPreprocessor
         $sourceLength = strlen($source);
 
         while ($nestingDepth > 0 && $currentPos < $sourceLength) {
-            [$nextOpeningPos, $nextClosingPos, $closingMatch] = self::findNextTags(
-                $source,
-                $componentName,
-                $currentPos
-            );
+            [$nextOpeningPos, $nextClosingPos, $closingMatch] = self::findNextTags($source, $componentName, $currentPos);
 
             if ($nextClosingPos === null) {
                 return null;

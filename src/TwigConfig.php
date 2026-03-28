@@ -22,7 +22,7 @@ final readonly class TwigConfig
         public bool $strictVariables = false,
         public string $autoescape = 'html',
         public ?bool $autoReload = null,
-        public int $optimizations = -1,
+        public int $optimizations = -1
     ) {}
 
     public function toArray(): array
@@ -34,7 +34,7 @@ final readonly class TwigConfig
             'autoescape' => $this->autoescape,
             'cache' => $this->cachePath === false ? false : internal_storage_path($this->cachePath ?? 'cache/twig'),
             'auto_reload' => $this->autoReload,
-            'optimizations' => $this->optimizations,
+            'optimizations' => $this->optimizations
         ];
     }
 }
