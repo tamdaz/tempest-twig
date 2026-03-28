@@ -3,6 +3,8 @@
     "description": "A third-party package that provides Twig for Tempest.",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Tamdaz\\TempestTwig\\": "src/"
@@ -34,7 +36,5 @@
             "@php vendor/bin/mago lint",
             "@php vendor/bin/mago analyze"
         ]
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }
