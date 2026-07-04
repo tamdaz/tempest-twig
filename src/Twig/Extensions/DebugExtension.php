@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig\Twig\Extensions;
 
+use Tempest\Core\EnvironmentVariableValidationFailed;
 use Twig\Attribute\AsTwigFunction;
+
+use function Tempest\env;
+use function Tempest\root_path;
 
 /**
  * The Twig extension for debugging and utility functions.
@@ -15,14 +19,22 @@ class DebugExtension
      * Dump - dumps variables without stopping execution.
      *
      * @param mixed ...$vars Values to dump.
-     * @return string|false Buffered dump output or false on failure.
+     * @return void
      */
     #[AsTwigFunction('dump')]
-    public static function dump(mixed ...$vars): string|false
+    public static function dump(mixed $vars): void
     {
-        ob_start();
         dump($vars);
-        return ob_get_clean();
+    }
+
+    /**
+     * @param mixed $data Values to dump
+     * @return void
+     */
+    #[AsTwigFunction("dd")]
+    public static function dd(mixed $data): void
+    {
+        dd($data);
     }
 
     /**
@@ -67,15 +79,24 @@ class DebugExtension
      * @param string $key Environment key to read.
      * @param mixed $default Fallback when the key is missing or null.
      * @return mixed Environment value or fallback.
+     * @throws EnvironmentVariableValidationFailed
      */
     #[AsTwigFunction('env')]
     public static function env(string $key, mixed $default = null): mixed
     {
-        if (!array_key_exists($key, $_ENV) || $_ENV[$key] === null) {
-            return $default;
-        }
+        return env($key, $default);
+    }
 
-        return $_ENV[$key];
+    /**
+     * Get an absolute path scoped to the root of the project.
+     *
+     * @param string ...$parts Path segments to append to the project root.
+     * @return string Absolute path.
+     */
+    #[AsTwigFunction('root_path')]
+    public static function rootPath(string ...$parts): string
+    {
+        return root_path(...$parts);
     }
 
     /**
