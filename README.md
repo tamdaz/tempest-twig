@@ -2,7 +2,7 @@
 
 Tempest Twig is a third-party package that integrates the Twig templating engine with the [Tempest framework](https://tempestphp.com). It provides full Twig `3.x` support, custom extensions for routing and debugging, and an innovative component system using HTML-like syntax.
 
-The package includes flexible configuration for template paths, built-in Twig extensions that work with Tempest's routing and Vite pipeline, and a sophisticated component transformation system. Everything is fully tested with PHPUnit and includes GitHub Actions CI.
+The package includes flexible configuration for template paths, built-in Twig extensions that work with Tempest's routing and Vite pipeline, and a sophisticated component transformation system.
 
 ## Installation
 
@@ -14,11 +14,29 @@ composer require tamdaz/tempest-twig
 
 ## Configuration
 
-To use Tempest Twig, create a configuration file in your `config` directory. Tempest will automatically discover and load this configuration.
+### View configuration
+
+For the moment, Tempest still renders views with its own default renderer. To render views with Twig, create _(or edit)_ your view configuration and set `rendererClass` explicitly via `php tempest make:config view`:
+
+```diff
++use Tamdaz\TempestTwig\Twig\TwigViewRenderer;
+use Tempest\View\ViewConfig;
+
+return new ViewConfig(
++    rendererClass: TwigViewRenderer::class,
+);
+```
+
+This keeps the renderer choice explicit: installing Tempest Twig never overrides an already configured renderer.
+
+### Twig Options
+
+Twig itself is configured through a file in the `config` directory, automatically discovered and loaded by Tempest.
 
 ```php
 // config/twig.config.php
-use Tamdaz\TempestTwig\TwigConfig;
+use Tempest\View\Renderers\TwigConfig;
+use function Tempest\env;
 use function Tempest\root_path;
 
 return new TwigConfig(
@@ -30,7 +48,7 @@ return new TwigConfig(
 );
 ```
 
-The `TwigConfig` class wraps Twig's standard options. The `viewPaths` parameter specifies which directories to search for templates. You can add multiple directories for different template locations. Other options like `debug`, `charset`, `strictVariables`, and `autoescape` follow Twig's standard behavior.
+The `TwigConfig` class wraps Twig's standard options. The `viewPaths` parameter specifies which directories to search for templates, and multiple directories can be added for different template locations. Other options like `debug`, `charset`, `strictVariables`, and `autoescape` follow Twig's standard behavior.
 
 ## Twig Functions
 
@@ -38,22 +56,22 @@ Tempest Twig automatically registers custom Twig functions that integrate with t
 
 ### Routing Functions
 
-The `route()` function generates URLs for named routes or controller methods. You can pass route parameters directly:
+The `route()` function generates URLs for named routes or controller methods, accepting route parameters directly:
 
 ```twig
 {{ route('route.name') }}
-{{ route([ControllerClass::class, 'method']) }}
-{{ route([ControllerClass::class, 'method'], param1, param2) }}
+{{ route(['App\\Controllers\\ControllerClass', 'method']) }}
+{{ route(['App\\Controllers\\ControllerClass', 'method'], param1, param2) }}
 ```
 
-Use `signed_route()` to generate URLs with cryptographic signatures. Use `temporary_signed_route()` for links that expire after a duration (in seconds):
+The `signed_route()` function generates URLs with cryptographic signatures, while `temporary_signed_route()` produces links that expire after a duration (in seconds):
 
 ```twig
 {{ signed_route('route.name') }}
 {{ temporary_signed_route('route.name', 3600) }}
 ```
 
-Check the current route with `is_current_route()` to highlight active navigation items:
+The `is_current_route()` function checks the current route, useful for highlighting active navigation items:
 
 ```twig
 {% if is_current_route('route.name') %}
@@ -61,17 +79,17 @@ Check the current route with `is_current_route()` to highlight active navigation
 {% endif %}
 ```
 
-The `current_path` variable provides the current request path as a string.
+The `current_path()` function returns the current request path as a string.
 
 ### Vite Functions
 
-If your Tempest application uses Vite for asset bundling, the package provides integration functions. Use `vite_tags()` to generate script and link tags for Vite entry points:
+For Tempest applications using Vite for asset bundling, the package provides integration functions. The `vite_tags()` function generates script and link tags for Vite entry points:
 
 ```twig
 {{ vite_tags('resources/js/app.ts', 'resources/css/app.css') }}
 ```
 
-Use `vite_asset()` to get the public URL of an asset from Vite's manifest:
+The `vite_asset()` function returns the public URL of an asset from Vite's manifest:
 
 ```twig
 <img src="{{ vite_asset('resources/images/logo.png') }}" />
@@ -87,25 +105,26 @@ Tempest Twig includes debugging and utility functions. The `dump()` function ins
 {% if is_empty(posts) %}No posts{% endif %}
 ```
 
-Additional utilities include `get_type()` for variable types, `env()` for environment variables with fallback, and `to_json()` for converting PHP values to JSON:
+Additional utilities include `get_type()` for variable types, `env()` for environment variables with fallback, `root_path()` for absolute paths scoped to the project root, and `to_json()` for converting PHP values to JSON:
 
 ```twig
 {{ get_type(value) }}
 {{ env('APP_NAME', 'MyApp') }}
+{{ root_path('storage', 'app.log') }}
 <script>
   const data = {{ to_json(users) }};
 </script>
 ```
 
-The `count()` function counts array elements, `current_url` gives the full URL, and `now` provides the current timestamp.
+The `count()` function counts array elements, `current_url()` gives the full URL, and `now()` provides the current timestamp.
 
 ## Component System
 
-Tempest Twig includes a component system using HTML-like syntax. Instead of writing Twig `include` and `embed` directives, you write component tags that look like HTML custom elements. The package transforms these tags into native Twig directives automatically.
+Tempest Twig includes a component system using HTML-like syntax. Instead of writing Twig `include` and `embed` directives, component tags that look like HTML custom elements can be written directly. The package transforms these tags into native Twig directives automatically.
 
 ### Self-Closing Components
 
-Self-closing components are ideal for simple UI elements like buttons and badges. Write them as XML-style tags with attributes:
+Self-closing components are ideal for simple UI elements like buttons and badges, written as XML-style tags with attributes:
 
 ```twig
 <twig:Button label="Click me" variant="primary" />
@@ -117,7 +136,7 @@ This transforms into a Twig `include` directive that passes attributes as variab
 {% include 'components/Button.html.twig' with { label: 'Click me', variant: 'primary' } only %}
 ```
 
-Your component template at `templates/components/Button.html.twig`:
+The component template at `templates/components/Button.html.twig`:
 
 ```twig
 <button class="btn btn-{{ variant ?? 'primary' }}">
@@ -127,7 +146,7 @@ Your component template at `templates/components/Button.html.twig`:
 
 ### Components with Content
 
-Components can wrap content, similar to Vue or React components. When you add content between tags, it transforms into an `embed` directive:
+Components can wrap content, similar to Vue or React components. Content added between tags transforms into an `embed` directive:
 
 ```twig
 <twig:Alert type="warning">
@@ -143,7 +162,7 @@ This becomes:
 {% endembed %}
 ```
 
-Your component template accesses the content through Twig's block system:
+The component template accesses the content through Twig's block system:
 
 ```twig
 <div class="alert alert-{{ type ?? 'info' }}">
@@ -153,7 +172,7 @@ Your component template accesses the content through Twig's block system:
 
 ### Components with Named Slots
 
-For complex components, define named content areas using `<twig:block>` tags. This allows different parts to accept different content:
+Complex components can define named content areas using `<twig:block>` tags, allowing different parts to accept different content:
 
 ```twig
 <twig:Card title="Welcome">
@@ -165,7 +184,7 @@ For complex components, define named content areas using `<twig:block>` tags. Th
 </twig:Card>
 ```
 
-Your component template can define multiple named blocks:
+The component template can define multiple named blocks:
 
 ```twig
 <div class="card">
@@ -181,7 +200,7 @@ Your component template can define multiple named blocks:
 </div>
 ```
 
-Default content (anything not in `<twig:block>`) goes into the `content` block. Named blocks are optional, so check if they have content before rendering them.
+Default content (anything not in `<twig:block>`) goes into the `content` block. Named blocks are optional, and checking whether they have content before rendering avoids empty markup.
 
 ### Attribute Binding
 
@@ -191,40 +210,12 @@ Components accept both static attributes and dynamic Twig expressions. Static at
 <twig:Button label="Click" variant="primary" disabled="true" />
 
 <twig:Button
-  label="{{ buttonLabel }}"
-  :variant="isSecondary ? 'secondary' : 'primary'" 
+  :label="buttonLabel"
+  :variant="isSecondary ? 'secondary' : 'primary'"
   :disabled="isLoading" />
 ```
 
-All attributes are available as variables in your component. The preprocessor handles nested components and escapes attribute values properly.
-
-### Component Organization
-
-Organize components in a dedicated `components` directory within your template's folder. This separates them from page templates and layouts:
-
-```
-templates/
-├── components/
-│   ├── Button.html.twig
-│   ├── Card.html.twig
-│   ├── Alert.html.twig
-│   └── UserProfile.html.twig
-├── layouts/
-│   └── base.html.twig
-└── pages/
-    ├── home.html.twig
-    └── about.html.twig
-```
-
-Always provide a default `content` block for the main content area. For optional slots, check if the block is empty before rendering to avoid extra HTML. Use PascalCase for component names to distinguish them from standard HTML tags.
-
-## How It Works
-
-Tempest Twig integrates several components. The `TwigInitializer` is the entry point discovered by Tempest's service container. It registers the Twig environment, sets up the `ComponentLoader` for transformation, and registers custom extensions. The `TwigViewRendererInitializer` then selects the `TwigViewRenderer` as the default renderer.
-
-The `ComponentPreprocessor` transforms your component syntax into standard Twig directives before Twig processes the template. Component tags become `include` or `embed` directives with proper variable passing. The transformation is transparent, so you never think about the underlying Twig code.
-
-Three extensions are automatically registered. The `DebugExtension` provides debugging utilities. The `RoutingExtension` integrates with Tempest's routing system. The `ViteExtension` handles Vite asset manifest integration.
+All attributes are available as variables inside the component. The preprocessor handles nested components and escapes attribute values properly.
 
 ## Testing and Development
 
