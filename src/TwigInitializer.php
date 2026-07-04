@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig;
 
-use Tamdaz\TempestTwig\Twig\ComponentLoader;
+use Tamdaz\TempestTwig\Twig\Components\ComponentLoader;
 use Tamdaz\TempestTwig\Twig\Extensions\DebugExtension;
 use Tamdaz\TempestTwig\Twig\Extensions\RoutingExtension;
 use Tamdaz\TempestTwig\Twig\Extensions\ViteExtension;
 use Tempest\Container\Container;
 use Tempest\Container\Initializer;
 use Tempest\Container\Singleton;
+use Tempest\View\Renderers\TwigConfig;
 use Twig\Environment;
 use Twig\Extension\AttributeExtension;
 use Twig\Loader\FilesystemLoader;
@@ -21,7 +22,8 @@ final class TwigInitializer implements Initializer
     public function initialize(Container $container): Environment
     {
         $twigConfig = $container->get(TwigConfig::class);
-        $loader = new FilesystemLoader($twigConfig->viewPaths);
+        $viewPaths = array_map(strval(...), $twigConfig->viewPaths);
+        $loader = new FilesystemLoader($viewPaths);
         $environment = new Environment(new ComponentLoader($loader), $twigConfig->toArray());
 
         foreach ($this->getTwigExtensions() as $extension) {
