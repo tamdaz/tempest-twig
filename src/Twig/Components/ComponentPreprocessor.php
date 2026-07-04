@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tamdaz\TempestTwig\Twig;
+namespace Tamdaz\TempestTwig\Twig\Components;
 
 /**
  * Preprocesses Twig template source to transform HTML-like component tags

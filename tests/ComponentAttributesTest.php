@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig\Tests;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\Test;
-use Tamdaz\TempestTwig\Twig\ComponentAttributes;
+use PHPUnit\Framework\TestCase;
+use Tamdaz\TempestTwig\Twig\Components\ComponentAttributes;
 
 final class ComponentAttributesTest extends TestCase
 {

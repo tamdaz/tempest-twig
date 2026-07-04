@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tamdaz\TempestTwig\Twig;
+namespace Tamdaz\TempestTwig\Twig\Components;
 
 final class ComponentAttributes
 {

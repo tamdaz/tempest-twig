@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tamdaz\TempestTwig\Twig;
+namespace Tamdaz\TempestTwig\Twig\Components;
 
 use Twig\Error\LoaderError;
 use Twig\Loader\LoaderInterface;
@@ -21,10 +21,10 @@ final readonly class ComponentLoader implements LoaderInterface
     /**
      * Wraps the inner Twig loader and applies component preprocessing.
      *
-     * @param LoaderInterface $inner Loader used to resolve template source.
+     * @param LoaderInterface $loader Loader used to resolve template source.
      */
     public function __construct(
-        private LoaderInterface $inner
+        private LoaderInterface $loader
     ) {}
 
     /**
@@ -36,7 +36,7 @@ final readonly class ComponentLoader implements LoaderInterface
      */
     public function getSourceContext(string $name): Source
     {
-        $source = $this->inner->getSourceContext($name);
+        $source = $this->loader->getSourceContext($name);
         $processed = ComponentPreprocessor::process($source->getCode());
 
         return new Source($processed, $source->getName(), $source->getPath());
@@ -51,7 +51,7 @@ final readonly class ComponentLoader implements LoaderInterface
      */
     public function getCacheKey(string $name): string
     {
-        return $this->inner->getCacheKey($name);
+        return $this->loader->getCacheKey($name);
     }
 
     /**
@@ -64,7 +64,7 @@ final readonly class ComponentLoader implements LoaderInterface
      */
     public function isFresh(string $name, int $time): bool
     {
-        return $this->inner->isFresh($name, $time);
+        return $this->loader->isFresh($name, $time);
     }
 
     /**
@@ -75,6 +75,6 @@ final readonly class ComponentLoader implements LoaderInterface
      */
     public function exists(string $name): bool
     {
-        return $this->inner->exists($name);
+        return $this->loader->exists($name);
     }
 }
