@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig\Twig;
 
+use Tamdaz\TempestTwig\Twig\Components\ComponentLoader;
 use Tempest\View\View;
 use Tempest\View\ViewRenderer;
 use Twig\Environment;
@@ -37,7 +38,7 @@ final readonly class TwigViewRenderer implements ViewRenderer
     public function render(View|string $view): string
     {
         if (is_string($view)) {
-            return trim($this->twig->render($view, []));
+            return trim($this->twig->render($view));
         }
 
         return trim($this->twig->render($view->path, $view->data));
