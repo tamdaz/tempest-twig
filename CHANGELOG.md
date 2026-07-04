@@ -10,6 +10,7 @@
 - Fix vulnerabilities of composer packages ([#6](https://github.com/tamdaz/tempest-twig/pull/6))
 - Organize component classes ([#5](https://github.com/tamdaz/tempest-twig/pull/5))
 - _**(security)**_ Fix vulnerabilities of composer packages ([#6](https://github.com/tamdaz/tempest-twig/pull/6))
+- Make the README instructional ([#9](https://github.com/tamdaz/tempest-twig/pull/9))
 
 ### Removed
 - Delete `TwigConfig` and the initializer. ([#8](https://github.com/tamdaz/tempest-twig/pull/8))
