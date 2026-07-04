@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tamdaz\TempestTwig\Tests;
 
+use PHPUnit\Framework\{Attributes\Test, TestCase};
+use Tamdaz\TempestTwig\Twig\Components\ComponentLoader;
 use Twig\Error\LoaderError;
 use Twig\Loader\ArrayLoader;
-use Tamdaz\TempestTwig\Twig\ComponentLoader;
-use PHPUnit\Framework\{TestCase, Attributes\Test};
 
 final class ComponentLoaderTest extends TestCase
 {
